@@ -18,4 +18,4 @@ Randomness is essential in many applications, including:
 
 ### Coin Flip Tutorial
 
-To follow along with this step-by-step Coin Flip tutorial, visit the [Secret Network docs](https://docs.scrt.network/secret-network-documentation/development/development-concepts/secret-vrf-on-chain-randomness/apis/true-randomness).
+To follow along with this step-by-step Coin Flip tutorial, visit the [Secret Network docs](https://docs.scrt.network/secret-network-documentation/development/development-concepts/secret-vrf-on-chain-randomness/randomness-api).
