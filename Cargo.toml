@@ -1,0 +1,42 @@
+[package]
+name = "rng-template"
+version = "0.1.0"
+authors = ["seanrad"]
+edition = "2021"
+description = "A simple randomness contract template for Secret Network"
+license = "Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = 'abort'
+incremental = false
+overflow-checks = true
+
+[features]
+default = []
+# for quicker tests, cargo test --lib
+# for more explicit tests, cargo test --features=backtraces
+backtraces = ["cosmwasm-std/backtraces"]
+
+[dependencies]
+cosmwasm-std = { git = "https://github.com/scrtlabs/cosmwasm", rev = "d2a02cf9c734c1aa86b0d1c6607ece4317892dbb", features = [
+    "random",
+] }
+cosmwasm-storage = { git = "https://github.com/scrtlabs/cosmwasm", rev = "d2a02cf9c734c1aa86b0d1c6607ece4317892dbb" }
+schemars = { version = "0.8.11" }
+serde = { version = "1.0" }
+thiserror = { version = "1.0" }
+cosmwasm-schema = "1.0.0"
+
+[patch.crates-io]
+cosmwasm-std = { git = "https://github.com/scrtlabs/cosmwasm", rev = "d2a02cf9c734c1aa86b0d1c6607ece4317892dbb" }
