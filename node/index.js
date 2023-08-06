@@ -1,15 +1,15 @@
 import { SecretNetworkClient, Wallet } from "secretjs";
 import * as fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
-const wallet = new Wallet(
-  "shed clerk spray velvet flower tide cherry idea public solar prize tackle"
-);
+const wallet = new Wallet(process.env.MNEMONIC);
 
 const contract_wasm = fs.readFileSync("../contract.wasm.gz");
-const codeId = 21879;
-const contractCodeHash =
-  "bf2fd119a5b9d7b672e3374a7073ed53ad34efd3b141680cee66b06249ae4235";
-const contractAddress = "secret1c65a3zesslfxfp69x5asjcr6x6m9nl23ptjfr2";
+// const codeId = 22569;
+// const contractCodeHash =
+//   "328af17aa2bad04c20cb4d1b3aa81978685597b59fcc9be22bb5190f36290d68";
+// const contractAddress = "secret1gydnetx0rzcnuenw2tq3zwltgn23tmv67r0320";
 
 const secretjs = new SecretNetworkClient({
   chainId: "pulsar-2",
