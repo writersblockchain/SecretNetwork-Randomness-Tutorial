@@ -1,19 +1,20 @@
 import { SecretNetworkClient, Wallet } from "secretjs";
 import * as fs from "fs";
 
-const wallet = new Wallet(
-  "shed clerk spray velvet flower tide cherry idea public solar prize tackle"
-);
+import dotenv from "dotenv";
+dotenv.config();
+
+const wallet = new Wallet(process.env.MNEMONIC);
 
 const contract_wasm = fs.readFileSync("../contract.wasm.gz");
-const codeId = 21879;
+const codeId = 1491;
 const contractCodeHash =
-  "bf2fd119a5b9d7b672e3374a7073ed53ad34efd3b141680cee66b06249ae4235";
-const contractAddress = "secret1c65a3zesslfxfp69x5asjcr6x6m9nl23ptjfr2";
+  "c2197f91edf5e5b92bede919db3ef4ce2ee264971bed18e73c90cc4ccd9b8f56";
+const contractAddress = "secret1xm7utphetk20qca0pqmyaayu824ytlj7u9ag8e";
 
 const secretjs = new SecretNetworkClient({
-  chainId: "pulsar-2",
-  url: "https://api.pulsar.scrttestnet.com",
+  chainId: "pulsar-3",
+  url: "https://api.pulsar3.scrttestnet.com",
   wallet: wallet,
   walletAddress: wallet.address,
 });
@@ -47,7 +48,7 @@ let upload_contract = async () => {
 // upload_contract();
 
 let instantiate_contract = async () => {
-  const initMsg = { flip: 4 };
+  const initMsg = {};
   let tx = await secretjs.tx.compute.instantiateContract(
     {
       code_id: codeId,
@@ -99,4 +100,14 @@ let query_flip = async () => {
   console.log(flip_tx);
 };
 
-query_flip();
+// query_flip();
+
+let executeFlips = async () => {
+  await try_flip();
+  await query_flip();
+};
+
+// Call the wrapper function
+executeFlips().catch((error) => {
+  console.error("An error occurred:", error);
+});
