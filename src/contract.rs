@@ -4,22 +4,15 @@ use cosmwasm_std::{
 
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, FlipResponse, InstantiateMsg, QueryMsg};
-use crate::state::{config, config_read, State};
+use crate::state::{SecretCoin, COIN};
 
 #[entry_point]
 pub fn instantiate(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
-    msg: InstantiateMsg,
+    _msg: InstantiateMsg,
 ) -> Result<Response, StdError> {
-    let state = State {
-        flip: msg.flip,
-        owner: info.sender.clone(),
-    };
-
-    config(deps.storage).save(&state)?;
-
     deps.api
         .debug(&format!("Contract was initialized by {}", info.sender));
 
@@ -39,11 +32,23 @@ pub fn execute(
 }
 
 pub fn try_flip(deps: DepsMut, env: Env) -> Result<Response, ContractError> {
-    config(deps.storage).update(|mut state| -> Result<_, ContractError> {
-        let coin_flip = env.block.random.unwrap().0[0] % 2;
-        state.flip = coin_flip;
-        Ok(state)
-    })?;
+    let coin_flip = env.block.random.unwrap().0[0] % 2;
+
+    let heads = SecretCoin {
+        heads: true,
+        tails: false,
+    };
+
+    let tails = SecretCoin {
+        heads: false,
+        tails: true,
+    };
+
+    if coin_flip == 0 {
+        COIN.insert(deps.storage, &true, &heads)?;
+    } else if coin_flip == 1 {
+        COIN.insert(deps.storage, &true, &tails)?;
+    }
 
     deps.api.debug("flipped!");
     Ok(Response::default())
@@ -57,6 +62,12 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
 }
 
 fn query_flip(deps: Deps) -> StdResult<FlipResponse> {
-    let state = config_read(deps.storage).load()?;
-    Ok(FlipResponse { flip: state.flip })
+    let coin_flip = COIN.get(deps.storage, &true);
+
+    match coin_flip {
+        Some(secret_coin) => Ok(FlipResponse {
+            secret_coin: secret_coin,
+        }),
+        None => Err(StdError::generic_err("Coin doesn't exist")),
+    }
 }
